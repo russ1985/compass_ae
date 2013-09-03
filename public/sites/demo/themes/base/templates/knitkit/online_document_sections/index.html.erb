@@ -1,0 +1,188 @@
+<div id="document_content">
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+    Ext.onReady(function () {
+        var currentItem, tree, tabs, fitted_panel;
+
+        tree = Ext.create('Ext.tree.Panel', {
+            region: 'west',
+            cls: 'tree_styles',
+            store: Ext.create('Ext.data.TreeStore', {
+                proxy: {
+                    type: 'ajax',
+                    url: 'online_document_sections/build_tree',
+                    extraParams: { section_id: <%= params[:section_id] %> },
+                    format: 'json'
+                },
+                root: {
+                    text: '<%= @root.title %>',
+                    id: '0',
+                    expanded: true
+                },
+                fields: [
+                    { name: 'id' },
+                    { name: 'title' },
+                    { name: 'iconCls' },
+                    { name: 'leaf' }
+                ]
+            }),
+            collapsible: true,
+            dockedItems: {
+                xtype: 'toolbar',
+                docked: 'top',
+                items: [
+                    {
+                        xtype: 'textfield',
+                        emptyText: 'Search',
+                        disabled: true,
+                        allowBlank: true
+                    }
+                ]
+            },
+            header: false,
+            autoScroll: true,
+            bodyBorder: false,
+            rootVisible: false,
+            width: 170,
+            displayField: 'title',
+            valueField: 'id',
+            title: '<%= @root.title %>',
+            listeners: {
+                'itemclick': function (view, record, htmlItem, index, e) {
+                    var tab_panel = Ext.getCmp('tabs_root'),
+                            tab = Ext.getCmp("tab_" + record.data['id']);
+                    showContent(record, tab);
+                }
+            }
+        });
+
+        tabs = Ext.createWidget('tabpanel', {
+            id: 'tabs_root',
+            region: 'center',
+            plain: true,
+            bodyBorder: true,
+            defaults: {
+                autoScroll: true,
+                bodyPadding: 10
+            },
+            items: [],
+            plugins: Ext.create('Ext.ux.TabCloseMenu', {
+                extraItemsTail: [
+                    '-',
+                    {
+                        text: 'Closable',
+                        checked: true,
+                        hideOnClick: true,
+                        handler: function (item) {
+                            currentItem.tab.setClosable(item.checked);
+                        }
+                    }
+                ],
+                listeners: {
+                    aftermenu: function () {
+                        currentItem = null;
+                    },
+                    beforemenu: function (menu, item) {
+                        var menuitem = menu.child('*[text="Closable"]');
+                        currentItem = item;
+                        menuitem.setChecked(item.closable);
+                    }
+                }
+            })
+        });
+
+        function showContent(record, tab) {
+            Ext.Ajax.request({
+                url: 'online_document_sections/get_content',
+                params: {
+                    document_section_id: record.data['id'],
+                    section_id:<%= @root.id %>
+                },
+                success: function (response) {
+                    var responseObj = Ext.JSON.decode(response.responseText);
+                    if (responseObj.success) {
+                        if (Ext.isEmpty(tab)) {
+                            tabs.add({
+                                id: "tab_" + record.data['id'],
+                                title: record.data['title'],
+                                html: responseObj.html,
+                                closable: true
+                            }).show();
+                        }
+                        else {
+                            tabs.setActiveTab(tab);
+                            tab.update(responseObj.html)
+                        }
+                    }
+                    else {
+                        Ext.Msg.alert('Error', 'Could not load content');
+                    }
+                },
+                failure: function (response) {
+                    Ext.Msg.alert('Error', 'Could not load content');
+                }
+            });
+        }
+
+        fitted_panel = Ext.createWidget('panel', {
+            id: 'fitted_panel',
+            layout: 'border',
+            width: 800,
+            header: false,
+            defaults: {
+                collapsible: true,
+                split: true
+            },
+            renderTo: 'document_content',
+            items: [
+                tree,
+                tabs
+            ]
+        });
+
+        resize_windows();
+    });
+
+    Ext.Ajax.request({
+        url: 'online_document_sections/get_content',
+        params: {
+            document_section_id:<%= @root.id %>,
+            section_id:<%= @root.id %>
+        },
+        success: function (response) {
+            var responseObj = Ext.JSON.decode(response.responseText);
+            if (responseObj.success) {
+                Ext.getCmp('tabs_root').add({
+                    xtype: 'panel',
+                    id: "tab_" + <%= @root.id.to_s %>,
+                    title: '<%= @root.title %>',
+                    html: responseObj.html,
+                    closable: false,
+                    autoScroll: true
+                });
+            }
+            else {
+                Ext.Msg.alert('Error', 'Could not load content');
+            }
+        },
+        failure: function (response) {
+            Ext.Msg.alert('Error', 'Could not load content');
+        }
+    });
+
+    function resize_windows() {
+        window_height = Ext.getBody().getViewSize().height;
+        header_height = Ext.get("header").getHeight();
+        footer_height = Ext.get("footer").getHeight();
+        document_content_height = window_height - header_height - footer_height;
+        Ext.get("document_content").setHeight(document_content_height);
+        Ext.getCmp("fitted_panel").setHeight(document_content_height - 20);
+    }
+
+    window.onresize = function () {
+        resize_windows();
+    }
+
+</script>
