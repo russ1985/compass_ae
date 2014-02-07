@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+source 'http://admin:c0mpa33@gems.compassagile.com:9292'
 
 ruby "1.9.3"
 gem 'rails', '3.2.14'
@@ -38,13 +39,14 @@ gem 'jquery-rails'
 # gem 'debugger'
 
 # CompassAE gems
-gem 'erp_base_erp_svcs', '3.1.5'
-gem 'erp_tech_svcs', '3.1.8'
-gem 'erp_app', '3.1.15'
-gem 'erp_forms', '3.1.1'
-gem 'knitkit', '2.1.15'
-gem 'rails_db_admin', '2.1.2'
-gem 'compass_ae_console', '2.0.0'
+gem 'erp_base_erp_svcs', '3.1.6'
+gem 'compass_ae_sencha', '1.0.6'
+gem 'erp_tech_svcs', '3.1.9'
+gem 'erp_app', '3.1.18'
+gem 'erp_forms', '3.1.3'
+gem 'knitkit', '2.1.16'
+gem 'rails_db_admin', '2.1.3'
+gem 'compass_ae_console', '2.0.1'
 
 # heroku gems
 gem 'rails_12factor', group: :production
