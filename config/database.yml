@@ -9,13 +9,13 @@ development:
 test:
   adapter: postgresql
   host: localhost
-  database: my_datbase_test
+  database: my_database_test
   pool: 5
   timeout: 5000
 
 production:
   adapter: postgresql
   host: localhost
-  database: my_datbase_production
+  database: my_database_production
   pool: 5
   timeout: 5000
