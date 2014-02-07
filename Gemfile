@@ -37,6 +37,7 @@ gem 'jquery-rails'
 # To use debugger
 # gem 'debugger'
 
+# CompassAE gems
 gem 'erp_base_erp_svcs', '3.1.5'
 gem 'erp_tech_svcs', '3.1.8'
 gem 'erp_app', '3.1.15'
@@ -44,3 +45,6 @@ gem 'erp_forms', '3.1.1'
 gem 'knitkit', '2.1.15'
 gem 'rails_db_admin', '2.1.2'
 gem 'compass_ae_console', '2.0.0'
+
+# heroku gems
+gem 'rails_12factor', group: :production
