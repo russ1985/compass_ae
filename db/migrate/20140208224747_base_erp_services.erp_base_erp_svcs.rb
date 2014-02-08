@@ -84,6 +84,7 @@ class BaseErpServices < ActiveRecord::Migration
         t.column :external_id_source, :string
         t.timestamps
       end
+      add_index :role_types, :internal_identifier, :name => "role_types_iid_idx"
     end
 
     # Create relationship_types table
@@ -272,35 +273,6 @@ class BaseErpServices < ActiveRecord::Migration
         t.column :phone_number, :string
         t.column :description, :string
 
-        t.timestamps
-      end
-    end
-
-    unless table_exists?(:party_search_facts)
-      create_table :party_search_facts do |t|
-        t.column :party_id, :integer
-        t.column :eid, :string
-        t.column :type, :string
-        t.column :roles, :text
-        t.column :party_description, :string
-        t.column :party_business_party_type, :string
-        t.column :user_login, :string
-        t.column :individual_current_last_name, :string
-        t.column :individual_current_first_name, :string
-        t.column :individual_current_middle_name, :string
-        t.column :individual_birth_date, :string
-        t.column :individual_ssn, :string
-        t.column :party_phone_number, :string
-        t.column :party_email_address, :string
-        t.column :party_address_1, :string
-        t.column :party_address_2, :string
-        t.column :party_primary_address_city, :string
-        t.column :party_primary_address_state, :string
-        t.column :party_primary_address_zip, :string
-        t.column :party_primary_address_country, :string
-        t.column :user_enabled, :boolean
-        t.column :user_type, :string
-        t.column :reindex, :boolean
         t.timestamps
       end
     end
