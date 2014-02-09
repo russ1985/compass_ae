@@ -14,7 +14,7 @@ class AddSaasSubscriptions
       description = plan[:description]
       internal_identifier = plan[:description].downcase
 
-      subscription_plan = SubscriptionPlan.new
+      subscription_plan = ProductType.new
       subscription_plan.description = description
       subscription_plan.internal_identifier = internal_identifier
       subscription_plan.external_identifier = internal_identifier
@@ -56,7 +56,7 @@ class AddSaasSubscriptions
       config = Configuration.find_by_internal_identifier("#{plan_iid}_subscription_configuration")
       config.destory
 
-      type = SubscriptionPlan.find_by_internal_identifier(plan_iid)
+      type = ProductType.find_by_internal_identifier(plan_iid)
       type.destroy
 
       plan = PricingPlan.find_by_internal_identifier("#{plan_iid}_plan")
